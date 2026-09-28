@@ -2,12 +2,26 @@ class BankAccount
 {
     string name;
     double balance;
-    double accountNumber;
-    public BankAccount(string name, double accountNumber, double balance)
+    string accountNumber;
+    public BankAccount(string name, string accountNumber, double balance)
     {
         this.name = name;
         this.accountNumber = accountNumber;
         this.balance = balance;
+    }
+
+    public bool CheckAccount(string accName, string accNumber)
+    {
+        name = name.ToLower();
+        accName = accName.ToLower();
+        if (accName == name && accNumber == accountNumber)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 
     public bool Deposit(double deposit)
@@ -40,4 +54,5 @@ class BankAccount
     {
         return balance;
     }
+
 }

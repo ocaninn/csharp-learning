@@ -2,7 +2,30 @@
 {
     public static void Main()
     {
-        EnterChoice();
+        List<BankAccount> accounts = new List<BankAccount>();
+        accounts.Add(new BankAccount("Lucas", "001", 200.00));
+        accounts.Add(new BankAccount("Pedro", "002", 220.00));
+        accounts.Add(new BankAccount("marcos", "003", 250.00));
+        BankAccount? current = null;
+        Console.WriteLine("===== Login =====");
+        while (current == null)
+        {
+            string accName = ReadAnswer("Insert your Name: ");
+            string accNumber = ReadAnswer("Insert your Account Number: ");
+            foreach (BankAccount acc in accounts)
+            {
+                if (acc.CheckAccount(accName, accNumber))
+                {
+                    current = acc;
+                    Console.WriteLine("Account Found!");
+                }
+            }
+            if (current == null)
+            {
+                Console.WriteLine("Invalid Details!");
+            }
+        }
+        EnterChoice(current);
     }
 
     static int ReadChoice(string userChoice)
@@ -39,10 +62,10 @@
         return entAmount;
     }
 
-    static void EnterChoice()
+
+    static void EnterChoice(BankAccount account)
     {
         bool state = true;
-        BankAccount account1 = new BankAccount("Lucas", 0001, 200.00);
         while (state)
         {
             Console.WriteLine("===== Bank Account =====");
@@ -56,36 +79,36 @@
             if (userChoice == 1)
             {
                 double amount = ReadAmount("How much would you like to deposit? €");
-                if (account1.Deposit(amount))
+                if (account.Deposit(amount))
                 {
-                    Console.WriteLine($"Deposited: €{amount} | Current balance: €{account1.GetBalance()}");
+                    Console.WriteLine($"Deposited: €{amount} | Current balance: €{account.GetBalance()}");
                 }
                 else
                 {
                     Console.WriteLine("Enter a valid amount!");
                 }
-                
+
 
             }
-            else if (userChoice == 2 && account1.GetBalance() <= 0)
+            else if (userChoice == 2 && account.GetBalance() <= 0)
             {
                 Console.WriteLine("Your balance is €0,00. Withdraw option not available!");
             }
             else if (userChoice == 2)
             {
                 double amount = ReadAmount("How much would you like to withdraw? €");
-                if (account1.WithDraw(amount))
+                if (account.WithDraw(amount))
                 {
-                    Console.WriteLine($"Withdrew: €{amount} | Current balance: €{account1.GetBalance()}");
+                    Console.WriteLine($"Withdrew: €{amount} | Current balance: €{account.GetBalance()}");
                 }
                 else
                 {
-                    Console.WriteLine($"Insufficient balance! €{account1.GetBalance()} available.");
+                    Console.WriteLine($"Insufficient balance! €{account.GetBalance()} available.");
                 }
             }
             else if (userChoice == 3)
             {
-                double balance = account1.GetBalance();
+                double balance = account.GetBalance();
                 Console.WriteLine($"Current Balance: €{balance}");
             }
             else if (userChoice == 4)

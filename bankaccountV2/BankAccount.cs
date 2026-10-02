@@ -1,9 +1,11 @@
 class BankAccount
 {
     string name;
-    double balance;
+    decimal balance;
     string accountNumber;
-    public BankAccount(string name, string accountNumber, double balance)
+
+    private List<string> history = new();
+    public BankAccount(string name, string accountNumber, decimal balance)
     {
         this.name = name;
         this.accountNumber = accountNumber;
@@ -12,9 +14,7 @@ class BankAccount
 
     public bool CheckAccount(string accName, string accNumber)
     {
-        name = name.ToLower();
-        accName = accName.ToLower();
-        if (accName == name && accNumber == accountNumber)
+        if (accName.ToLower() == name.ToLower() && accNumber == accountNumber)
         {
             return true;
         }
@@ -24,11 +24,12 @@ class BankAccount
         }
     }
 
-    public bool Deposit(double deposit)
+    public bool Deposit(decimal deposit)
     {
         if (deposit > 0)
         {
             balance = deposit + balance;
+            history.Add($"{DateTime.Now:dd/MM/yyyy HH:mm} | Deposit | {deposit:C} | Balance: {balance:C}");
             return true;
         }
         else
@@ -37,11 +38,13 @@ class BankAccount
         }
 
     }
-    public bool WithDraw(double amount)
+
+    public bool WithDraw(decimal amount)
     {
         if (amount > 0 && amount <= balance)
         {
             balance = balance - amount;
+            history.Add($"{DateTime.Now:dd/MM/yyyy HH:mm} | Withdraw | {amount:C} | Balance: {balance:C}");
             return true;
         }
         else
@@ -50,9 +53,35 @@ class BankAccount
         }
 
     }
-    public double GetBalance()
+
+    public bool TransferTo(BankAccount recipient, decimal amount)
+    {
+        if (amount > 0 && amount <= balance)
+        {
+            balance = balance - amount;
+            recipient.balance = recipient.balance + amount;
+            history.Add($"{DateTime.Now:dd/MM/yyyy HH:mm} | Transferred | {amount:C} | To Account: {recipient.accountNumber} | Balance: {balance:C}");
+            recipient.history.Add($"{DateTime.Now:dd/MM/yyyy HH:mm} | Received | {amount:C} | From: {accountNumber} | Balance: {recipient.balance:C}");
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+
+    }
+    public decimal GetBalance()
     {
         return balance;
+    }
+    public string GetAccountNumber()
+    {
+        return accountNumber;
+    }
+
+    public List<string> GetHistory()
+    {
+        return new List<string>(history);
     }
 
 }

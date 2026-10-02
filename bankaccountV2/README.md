@@ -1,41 +1,46 @@
-# Bank Account — Version 2 (Classes & Login)
+# Bank Account — Version 2 (Classes)
 
-A rewrite of my [Bank Account](../bankaccount/) console app using object-oriented programming. Customers log in with their name and account number, then deposit, withdraw and check their balance. Each account is an object that holds its own data and enforces its own rules.
+A rewrite of my [Bank Account](../bankaccount/) console app using a `BankAccount` class. The menu now supports multiple accounts, deposits, withdrawals, transfers and transaction history, while the account class handles its own data and rules.
 
 ## Features
 
-- **Login** with name and account number (capital letters don't matter)
-- **Multiple accounts**, stored in a list, so adding a new customer is a single line
-- **Deposit and withdraw**, with the rules enforced by the account itself: positive amounts only, no overdrafts
-- **Input validation**: typing text or negative numbers never crashes the program
+* Multiple bank accounts with login and logout
+* Deposit and withdraw money
+* Transfer money between accounts
+* View account balance with **decimal and euro formatting**
+* View transaction history
+* Input validation and withdrawal confirmation
+* Encapsulated account data and rules
 
 ## What changed from version 1
 
-| Version 1 | Version 2 |
-| --- | --- |
-| One `static double balance` that any method could change | A `private` balance that only `Deposit` and `WithDraw` can change |
-| Rules lived in the menu code | Rules live inside the account, which protects itself |
-| Only one account possible | Any number of accounts in a `List<BankAccount>` |
-| No login | Login finds the matching account and hands it to the menu |
-| Methods did the work *and* talked to the user | `BankAccount` does the work, `Program` handles all input and output |
+| Version 1                                  | Version 2                                                   |
+| ------------------------------------------ | ----------------------------------------------------------- |
+| One `static double balance`                | Each `BankAccount` has its own private balance              |
+| Rules lived in the menu code               | Rules are enforced inside the account                       |
+| Only one account                           | Multiple account objects can exist                          |
+| Methods handled logic and user interaction | `BankAccount` handles logic, `Program` handles input/output |
+| No transaction history                     | Each account keeps its own transaction history              |
 
 ## How it's structured
 
-- **`BankAccount.cs`**: holds the owner's name, account number and balance (all private).
-  - `CheckAccount(name, number)`: returns `true` if the details match this account
-  - `Deposit(amount)` / `WithDraw(amount)`: return `true`/`false` to report whether the operation was allowed
-  - `GetBalance()`: returns the current balance
-- **`Program.cs`**:
-  - `Main`: creates the accounts and runs the login loop
-  - `EnterChoice(account)`: the menu, working with whichever account logged in
-  - `ReadAmount`, `ReadChoice`, `ReadAnswer`: input validation
+* **`BankAccount.cs`**: represents an account and manages its owner, account number, balance and transaction history. It handles deposits, withdrawals and transfers while enforcing the account's rules.
+* **`Program.cs`**: handles the menu, login/logout, input validation and user interaction.
 
 ## What I learned
 
-- **Classes and objects:** a class is a blueprint, and each object created with `new` has its own copy of the fields.
-- **Constructors and `this`:** `this.name = name` separates the field from a parameter with the same name. Giving the parameter a different name avoids the clash altogether.
-- **Encapsulation:** a `private` balance can only change through methods that check the rules. The compiler blocks any direct access.
-- **Returning `bool` for success:** like `TryParse`, the account reports whether an operation worked, and `Program` chooses the message.
-- **Calling a method inside an `if` still runs it:** calling `WithDraw` once before the `if` and again inside it withdrew the money twice.
-- **Lists of objects:** one `List<BankAccount>` instead of `account1`, `account2`, `account3`, which scales to any number of accounts.
-- **Searching with `foreach`:** a failed match only means "not *this* account". I
+* **Classes and objects:** a class is a blueprint, while each object created with `new` has its own data.
+* **Encapsulation:** private fields can only be accessed through the class that owns them, so each `BankAccount` controls and protects its own state.
+* **Private is per class:** `private` means other classes cannot access the member directly, but every `BankAccount` object can still access its own private fields.
+* **Reference types:** objects and lists are reference types, so assigning them to another variable can make both variables refer to the same object.
+* **Returning a copy of a list:** returning a new copy of the transaction list prevents outside code from directly modifying the account's internal history.
+* **Constructors:** constructors initialise each account with its starting information.
+* **Returning `bool` for success:** operations such as `Deposit` and `WithDraw` report whether they succeeded, allowing `Program` to decide what message to display.
+* **`decimal` for money:** using `decimal` instead of `double` is better suited to financial calculations, while formatting values as euros makes the output clearer.
+* **Separation of responsibilities:** keeping account logic inside `BankAccount` and user interaction inside `Program` makes the code easier to understand and extend.
+
+## Next steps
+
+* Improve the login system
+* Add persistent data so accounts survive after the program closes
+* Add more transaction types
